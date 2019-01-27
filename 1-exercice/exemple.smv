@@ -10,4 +10,16 @@ ASSIGN
  esac;
 
 SPEC AG(request -> AF state = busy)
+SPEC AF(state = ready)
+SPEC AG ((request & state = ready) -> AX state = busy)
+SPEC EG (request -> AX state = busy)
 SPEC AF(state = busy)
+SPEC EG (request -> EX state = ready)
+SPEC AG (request -> AX state = busy)
+LTLSPEC F state=ready
+LTLSPEC request -> F state=busy
+LTLSPEC F (request -> state = busy)
+LTLSPEC ((request & state = ready) ->  X state = busy)
+LTLSPEC F state=busy
+LTLSPEC F request -> state = busy
+LTLSPEC ((request & state = ready) ->  X state = ready)

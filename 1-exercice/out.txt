@@ -1,4 +1,7 @@
 -- specification AG (request -> AF state = busy)  is true
+-- specification AF state = ready  is true
+-- specification AG ((request & state = ready) -> AX state = busy)  is true
+-- specification EG (request -> AX state = busy)  is true
 -- specification AF state = busy  is false
 -- as demonstrated by the following execution sequence
 Trace Description: CTL Counterexample 
@@ -8,3 +11,63 @@ Trace Type: Counterexample
     request = FALSE
     state = ready
   -> State: 1.2 <-
+-- specification EG (request -> EX state = ready)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 2.1 <-
+    request = TRUE
+    state = ready
+-- specification AG (request -> AX state = busy)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -- Loop starts here
+  -> State: 3.1 <-
+    request = FALSE
+    state = ready
+  -> State: 3.2 <-
+    request = TRUE
+    state = busy
+  -> State: 3.3 <-
+    request = FALSE
+    state = ready
+-- specification  F state = ready  is true
+-- specification (request ->  F state = busy)  is true
+-- specification  F (request -> state = busy)  is true
+-- specification ((request & state = ready) ->  X state = busy)  is true
+-- specification  F state = busy  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -- Loop starts here
+  -> State: 4.1 <-
+    request = FALSE
+    state = ready
+  -> State: 4.2 <-
+-- specification ( F request -> state = busy)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -> State: 5.1 <-
+    request = TRUE
+    state = ready
+  -- Loop starts here
+  -> State: 5.2 <-
+    request = FALSE
+    state = busy
+  -> State: 5.3 <-
+-- specification ((request & state = ready) ->  X state = ready)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample 
+Trace Type: Counterexample 
+  -- Loop starts here
+  -> State: 6.1 <-
+    request = TRUE
+    state = ready
+  -> State: 6.2 <-
+    request = FALSE
+    state = busy
+  -> State: 6.3 <-
+    request = TRUE
+    state = ready
