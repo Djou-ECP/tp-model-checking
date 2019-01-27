@@ -1,0 +1,10 @@
+-- specification AG (request -> AF state = busy)  is true
+-- specification AF state = busy  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample 
+Trace Type: Counterexample 
+  -- Loop starts here
+  -> State: 1.1 <-
+    request = FALSE
+    state = ready
+  -> State: 1.2 <-

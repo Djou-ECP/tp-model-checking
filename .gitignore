@@ -1,0 +1,5 @@
+# Énoncé
+*.pdf
+
+# macOS
+.DS_Store
