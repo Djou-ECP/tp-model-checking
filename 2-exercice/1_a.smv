@@ -12,8 +12,10 @@ ASSIGN
     esac;
     next(b) := case
         a & b : FALSE;
-        !a : TRUE;
-        TRUE : {TRUE, FALSE};
+        a & !b & next(a): TRUE;
+        !a & !b: TRUE;
+	!a & b : TRUE;
+        TRUE : {TRUE, FALSE}; 
     esac;
 
 LTLSPEC G(a) 

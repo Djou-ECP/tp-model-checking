@@ -7,10 +7,10 @@ DEFINE
 ASSIGN
     init(state) := anb;
     next(state) := case
-        a & b : anb;
-        !a & b : nanb;
-        !a & !b : nanb;
-        a & !b : {ab, nab, nanb};
+        state = anb: {nanb, nab, ab};
+        state = nab: nab;
+        state = nanb: nab;
+        state = ab: anb;
     esac;
 
 LTLSPEC G(a) 
