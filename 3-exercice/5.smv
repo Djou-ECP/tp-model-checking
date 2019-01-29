@@ -1,0 +1,20 @@
+MODULE main
+VAR
+    p1 : boolean;
+    p2 : boolean;
+    q1 : boolean;
+    q2 : boolean;
+ASSIGN
+    init(p1) := TRUE;
+    init(p2) := TRUE;
+    init(q1) := {TRUE, FALSE};
+    init(q2) := {TRUE, FALSE};
+
+    next(p1) := TRUE;
+    next(p2) := TRUE;
+    next(q2) := case
+        q1 : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+LTLSPEC (G(F p1) & G(F p2)) -> G(q1 -> X q2)

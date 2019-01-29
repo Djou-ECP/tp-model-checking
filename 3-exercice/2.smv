@@ -1,0 +1,8 @@
+MODULE main
+VAR
+    p : boolean;
+ASSIGN
+    init(p) := TRUE;
+    next(p) := TRUE;
+
+LTLSPEC G(F(p))
