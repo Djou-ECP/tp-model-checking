@@ -1,0 +1,21 @@
+MODULE main
+VAR
+    state : {ab, nab, anb, nanb};
+DEFINE
+    a := state = ab | state = anb;
+    b := state = ab | state = nab;
+INIT
+    state = anb
+TRANS
+    (state = ab -> next(state) = anb) &
+    ((state = nanb) | (state = nab) -> next(state) = nab) &
+    (state = anb -> (next(state) = nanb | next(state) = nab | next(state) = ab))
+
+LTLSPEC G(a) 
+LTLSPEC a U b
+LTLSPEC a U X( a & !b)
+LTLSPEC X( !b &  G(!a | !b))
+LTLSPEC X(a & b) & F(!a & !b)
+SPEC EF(EG(a))
+SPEC EF(EG(b))
+LTLSPEC F(G(a) | G(b))
