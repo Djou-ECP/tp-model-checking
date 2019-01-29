@@ -1,0 +1,33 @@
+MODULE main
+VAR
+    -- chaque variable est un booléen
+    -- FALSE veut dire que la feuille / l'insecte est sur la rive de départ
+    -- TRUE veut dire qu'il est sur la rive d'arrivée
+    lombric : boolean;
+    millepatte : boolean;
+    sauterelle : boolean;
+    feuille : boolean;
+INIT 
+    -- la feuille et les insectes commencent sur la rive de départ
+    lombric = FALSE &
+    sauterelle = FALSE &
+    millepatte = FALSE & 
+    feuille = FALSE
+TRANS
+    -- la feuille doit bouger à chaque tour
+    next(feuille) != feuille &
+    -- la feuille ne peut pas traverser en étant vide
+    -- donc au moins un des insectes doit traverser aussi
+    (next(lombric) != lombric | next(sauterelle) != sauterelle | next(millepatte) != millepatte) &
+    -- si le lombric traverse, alors ni le millepatte, ni la sauterelle ne peut traverser
+    -- dans ce cas, le lombric traverse avec la feuille
+    (next(lombric) != lombric -> (next(lombric) = next(feuille) & next(millepatte) = millepatte & next(sauterelle) = sauterelle)) &
+    -- si le millepatte traverse, alors il traverse avec la feuille
+    -- et le lombric ne peut pas traverser
+    (next(millepatte) != millepatte -> (next(millepatte) = next(feuille) & next(lombric) = lombric)) &
+    -- même chose pour la sauterelle que le millepatte
+    (next(sauterelle) != sauterelle -> (next(sauterelle) = next(feuille) & next(lombric) = lombric))
+
+-- Existe-t-il un chemin d'exécution où le millepatte, la sauterelle et le lombric
+-- sont tous les trois simultanément sur la rive d'arrivée ?
+SPEC EF( millepatte & sauterelle & lombric)
