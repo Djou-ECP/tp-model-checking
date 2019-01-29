@@ -14,4 +14,4 @@ ASSIGN
         TRUE : FALSE;
     esac;
 
-LTLSPEC G( p -> !( !q U p) )
+LTLSPEC G( p -> X !( !q U p) )
