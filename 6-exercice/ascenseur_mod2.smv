@@ -1,0 +1,94 @@
+MODULE main
+VAR
+-- floor : position de l'ascenseur, request : etages selectionnés dans l'ascenseur, call : etages depuis lesquels l'ascenseur est appelé
+    floor : 1..3;
+    request : array 1..3 of boolean;
+    call : array 1..3 of boolean;
+    direction : {up, down};
+
+ASSIGN
+    -- Etat initial : aucun appel n'est enregistré, l'ascenseur est positionné aléatoirement
+    init(request[1]) := FALSE;
+    init(request[2]) := FALSE;
+    init(request[3]) := FALSE;
+
+    init(call[1]) := FALSE;
+    init(call[2]) := FALSE;
+    init(call[3]) := FALSE;
+
+    next(floor) := case
+        -- Etage 1, le sens de direction n'importe pas, on ne peut que monter, on s'arrete à chaque étage appelé en route
+        (floor = 1) & (request[2] | call[2]) : 2;
+        (floor = 1) & (request[3] | call[3]) : 3;
+
+        -- Etage 2, la direction importe, on monte continue la marche en cours en priorité si l'étage associé est appelé
+        (floor = 2) & (direction = up) & (request[3] | call[3]) : 3;
+        (floor = 2) & (direction = down) & (request[1] | call[1]) : 1;
+        (floor = 2) & (direction = up) & (request[1] | call[1]) : 1;
+        (floor = 2) & (direction = down) & (request[3] | call[3]) : 3;
+
+        -- Etage 3, le sens de direction n'importe pas, on ne peut que descendre, on s'arrete à chaque étage appelé en route
+        (floor = 3) & (request[2] | call[2]) : 2;
+        (floor = 3) & (request[1] | call[1]) : 1;
+
+        -- Aucun appel, l'ascenseur reste où il est.
+        TRUE : floor;
+    esac;
+
+
+    -- Traitement de la direction : 
+    -- Le cas final on choisi de conserver la dernière direction meme si l'ascenseur ne bouge pas en cas d'appels multiples simultanés
+    next(direction) := case 
+        next(floor) > floor : up;
+        next(floor) < floor : down;
+        TRUE : direction;
+    esac;
+
+
+    -- Traitement des boutons : 
+    -- Si un bouton était allumé et que son étage est atteint, il sera forcément éteint
+    -- Si un bouton était allumé et que son étage n'est pas atteint, il le reste
+    -- Sinon il peut être ou non appuyé par un utilisateur
+    next(request[1]) := case
+        next(floor) = 1 : FALSE;
+        request[1] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+    next(request[2]) := case
+        next(floor) = 2 : FALSE;
+        request[2] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+    next(request[3]) := case
+        next(floor) = 3 : FALSE;
+        request[3] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+    next(call[1]) := case
+        next(floor) = 1 : FALSE;
+        call[1] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+    next(call[2]) := case
+        next(floor) = 2 : FALSE;
+        call[2] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+    next(call[3]) := case
+        next(floor) = 3 : FALSE;
+        call[3] : TRUE;
+        TRUE : {TRUE, FALSE};
+    esac;
+
+SPEC AG(request[1] -> AF(floor = 1))
+SPEC AG(request[2] -> AF(floor = 2))
+SPEC AG(request[3] -> AF(floor = 3))
+
+SPEC AG(call[1] -> AF(floor = 1))
+SPEC AG(call[2] -> AF(floor = 2))
+SPEC AG(call[3] -> AF(floor = 3))
