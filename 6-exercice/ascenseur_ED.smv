@@ -1,3 +1,5 @@
+-- L'Etage de direction est ici arbitrairement choisi comme étant l'étage 3.
+
 MODULE main
 VAR
 -- floor : position de l'ascenseur, request : etages selectionnés dans l'ascenseur, call : etages depuis lesquels l'ascenseur est appelé
@@ -17,15 +19,14 @@ ASSIGN
     init(call[3]) := FALSE;
 
     next(floor) := case
+        -- Priorisation de l'étage de direction 
+        request[3] | call[3] : 3;
+
         -- Etage 1, le sens de direction n'importe pas, on ne peut que monter, on s'arrete à chaque étage appelé en route
         (floor = 1) & (request[2] | call[2]) : 2;
-        (floor = 1) & (request[3] | call[3]) : 3;
 
         -- Etage 2, la direction importe, on monte continue la marche en cours en priorité si l'étage associé est appelé
-        (floor = 2) & (direction = up) & (request[3] | call[3]) : 3;
-        (floor = 2) & (direction = down) & (request[1] | call[1]) : 1;
-        (floor = 2) & (direction = up) & (request[1] | call[1]) : 1;
-        (floor = 2) & (direction = down) & (request[3] | call[3]) : 3;
+        (floor = 2) & (request[1] | call[1]) : 1;
 
         -- Etage 3, le sens de direction n'importe pas, on ne peut que descendre, on s'arrete à chaque étage appelé en route
         (floor = 3) & (request[2] | call[2]) : 2;
@@ -84,6 +85,10 @@ ASSIGN
         call[3] : TRUE;
         TRUE : {TRUE, FALSE};
     esac;
+
+
+-- Ce que l'on attend de l'ascenseur ED est qu'il aille à l'étage de direction en priorité
+SPEC AG((request[3] | call[3]) -> AX(floor = 3))
 
 -- Phi
 SPEC AG( ((request[1] | call[1]) -> AF(floor = 1)) & ((request[2] | call[2]) -> AF(floor = 2)) & ((request[3] | call[3]) -> AF(floor = 3)) )

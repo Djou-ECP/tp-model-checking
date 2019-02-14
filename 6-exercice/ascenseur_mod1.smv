@@ -70,10 +70,5 @@ ASSIGN
         TRUE : {TRUE, FALSE};
     esac;
 
-SPEC AG(request[1] -> AF(floor = 1))
-SPEC AG(request[2] -> AF(floor = 2))
-SPEC AG(request[3] -> AF(floor = 3))
-
-SPEC AG(call[1] -> AF(floor = 1))
-SPEC AG(call[2] -> AF(floor = 2))
-SPEC AG(call[3] -> AF(floor = 3))
+-- Phi
+SPEC AG( ((request[1] | call[1]) -> AF(floor = 1)) & ((request[2] | call[2]) -> AF(floor = 2)) & ((request[3] | call[3]) -> AF(floor = 3)) )
