@@ -1,0 +1,28 @@
+
+MODULE cell(id, input)
+VAR drapeau : {0, 1, 2, 3};
+DEFINE priv := case
+    id = 0: (drapeau = input);
+    TRUE: !(drapeau=input);
+esac;
+
+ASSIGN
+next(drapeau) := case
+    id = 0 & priv: ((input+1) mod 4);
+    id = 0: drapeau;
+    id != 0 & priv: input;
+    TRUE: drapeau;
+esac;
+FAIRNESS running
+
+MODULE main
+VAR
+    c0 : process cell(0, c2.drapeau);
+    c1 : process cell(1, c0.drapeau);
+    c2 : process cell(2, c1.drapeau);
+
+SPEC AG (AF ((c0.drapeau = c1.drapeau) & (c1.drapeau = c2.drapeau)));
+SPEC AG (AF ((c0.priv) & !(c1.priv) & !(c2.priv)) |
+         (!(c0.priv) & (c1.priv) & !(c2.priv)) |
+         (!(c0.priv) & !(c1.priv) & (c2.priv)));
+SPEC AG (((c0.drapeau = c1.drapeau) & (c1.drapeau = c2.drapeau)) -> AX ((c0.drapeau = (c1.drapeau + 1) mod 4) | ((c0.drapeau = c1.drapeau) & (c1.drapeau = c2.drapeau))));
